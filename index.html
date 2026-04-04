@@ -1112,19 +1112,16 @@
         display: none !important;
     }
 
-    /* 3. شريط البحث والمجموع الكلي (ثابت ولا يتمدد مع الأرقام الكبيرة) */
+    /* 3. شريط البحث والمجموع الكلي (سطر واحد متناسق) */
     body.mobile-mode #userTopBar + div {
         flex-wrap: nowrap !important;
         gap: 6px !important;
         margin-bottom: 10px !important;
         justify-content: space-between !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
     }
 
     body.mobile-mode .search-container {
-        /* نسبة 60% تقريباً ثابتة ولا تتأثر بالمحتوى */
-        flex: 6 1 0% !important; 
+        flex: 1.8 !important; /* نسبة البحث */
         min-width: 0 !important;
         margin: 0 !important;
     }
@@ -1132,33 +1129,25 @@
     body.mobile-mode .search-box {
         height: 38px !important;
         padding: 0 10px !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         border-radius: 6px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
     }
 
     body.mobile-mode #userTopBar + div > div:nth-child(2) {
-        /* نسبة 40% تقريباً ثابتة ولا تتأثر بالأرقام الطويلة */
-        flex: 4 1 0% !important; 
+        flex: 1.2 !important; /* نسبة المجموع */
         min-width: 0 !important;
         height: 38px !important;
-        padding: 0 2px !important;
-        font-size: 10px !important;
+        padding: 0 5px !important;
+        font-size: 11px !important;
         border-radius: 6px !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         gap: 3px !important;
-        white-space: nowrap !important; /* يمنع النص من توسيع المربع */
-        overflow: hidden !important;
     }
 
     body.mobile-mode #mainTableGrandTotal {
         font-size: 13px !important;
-        font-weight: bold !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important; /* يضيف نقاط إذا صار الرقم خيالي الطول */
     }
 
     /* 4. أزرار المهام والتصدير (مسطحة وأنيقة) */
@@ -1183,52 +1172,29 @@
     body.mobile-mode .icon-box br {
         display: none !important; /* منع سطر جديد داخل الزر */
     } 
-    
+
     /* ================================================== */
-    /* === تثبيت الجزء العلوي وتمرير القائمة فقط (App Style) === */
+    /* === إخفاء نصوص المجموع في الهاتف لتثبيت شريط البحث === */
     /* ================================================== */
 
-    body.mobile-mode {
-        height: 100vh !important;
-        height: 100dvh !important; /* لدعم شاشات الهواتف الحديثة بدقة */
-        overflow: hidden !important; /* يمنع سحب الصفحة بالكامل للأعلى والأسفل */
-        padding: 0 !important;
-        margin: 0 !important;
+    /* إخفاء الكلمة الأولى (المجموع الكلي:) والكلمة الأخيرة (دينار) */
+    body.mobile-mode #userTopBar + div > div:nth-child(2) span:first-child,
+    body.mobile-mode #userTopBar + div > div:nth-child(2) span:last-child {
+        display: none !important;
     }
 
-    body.mobile-mode .container {
-        height: 100% !important;
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 10px 10px 0 10px !important;
-        box-sizing: border-box !important;
+    /* تجميل الرقم المتبقي وإضافة أيقونة فلوس بدال الكلمات */
+    body.mobile-mode #mainTableGrandTotal {
+        font-size: 15px !important;
+        font-weight: bold !important;
+        width: 100% !important;
+        text-align: center !important;
     }
 
-    /* منع انضغاط الأجزاء العلوية (الشريط، البحث، والأيقونات) عند امتلاء القائمة */
-    body.mobile-mode .user-top-bar,
-    body.mobile-mode #userTopBar + div,
-    body.mobile-mode .icons-wrapper {
-        flex-shrink: 0 !important;
+    body.mobile-mode #mainTableGrandTotal::before {
+        content: "💵 "; /* أيقونة بديلة */
     }
 
-    /* جعل منطقة الجدول (القائمة) هي الوحيدة القابلة للتمرير */
-    body.mobile-mode .table-responsive {
-        flex-grow: 1 !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        padding-bottom: 80px !important; /* لترك مساحة لأزرار التحكم السفلية */
-        -webkit-overflow-scrolling: touch !important; /* لتمرير ناعم وسلس جداً في الايفون */
-    }
-
-    /* تجميل شكل شريط التمرير (السكروول) للقائمة */
-    body.mobile-mode .table-responsive::-webkit-scrollbar {
-        width: 4px;
-    }
-    body.mobile-mode .table-responsive::-webkit-scrollbar-thumb {
-        background: #bdc3c7;
-        border-radius: 10px;
-    }
-    
     </style>
 </head>
 <body>

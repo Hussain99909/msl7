@@ -674,21 +674,6 @@
         padding: 10px;
     }
 
-    /* إيقاف حركة متصفح الويب المزعجة (السحب للأعلى والأسفل للصفحة كاملة) */
-    body.mobile-mode {
-        overscroll-behavior-y: none !important;
-        height: 100dvh !important; /* ياخذ ارتفاع الشاشة الفعلي بدقة */
-        overflow: hidden !important; /* يقفل حركة الصفحة بالكامل */
-    }
-
-    /* جعل السحب يقتصر على القائمة بداخل البرنامج فقط وبشكل ناعم */
-    body.mobile-mode .container {
-        height: 100dvh !important;
-        overflow-y: auto !important; /* يسمح بسحب القائمة فقط */
-        -webkit-overflow-scrolling: touch !important; /* يخلي السحب ناعم جداً مثل تطبيقات الآيفون */
-        padding-bottom: 90px !important; /* مساحة حتى الشريط السفلي ما يغطي آخر مادة */
-    }
-
     body.mobile-mode .container {
         width: 100%;
         padding: 10px;
@@ -1187,7 +1172,52 @@
     body.mobile-mode .icon-box br {
         display: none !important; /* منع سطر جديد داخل الزر */
     } 
+    
+    /* ================================================== */
+    /* === تثبيت الجزء العلوي وتمرير القائمة فقط (App Style) === */
+    /* ================================================== */
 
+    body.mobile-mode {
+        height: 100vh !important;
+        height: 100dvh !important; /* لدعم شاشات الهواتف الحديثة بدقة */
+        overflow: hidden !important; /* يمنع سحب الصفحة بالكامل للأعلى والأسفل */
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    body.mobile-mode .container {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 10px 10px 0 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* منع انضغاط الأجزاء العلوية (الشريط، البحث، والأيقونات) عند امتلاء القائمة */
+    body.mobile-mode .user-top-bar,
+    body.mobile-mode #userTopBar + div,
+    body.mobile-mode .icons-wrapper {
+        flex-shrink: 0 !important;
+    }
+
+    /* جعل منطقة الجدول (القائمة) هي الوحيدة القابلة للتمرير */
+    body.mobile-mode .table-responsive {
+        flex-grow: 1 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 80px !important; /* لترك مساحة لأزرار التحكم السفلية */
+        -webkit-overflow-scrolling: touch !important; /* لتمرير ناعم وسلس جداً في الايفون */
+    }
+
+    /* تجميل شكل شريط التمرير (السكروول) للقائمة */
+    body.mobile-mode .table-responsive::-webkit-scrollbar {
+        width: 4px;
+    }
+    body.mobile-mode .table-responsive::-webkit-scrollbar-thumb {
+        background: #bdc3c7;
+        border-radius: 10px;
+    }
+    
     </style>
 </head>
 <body>

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام إدارة المشتريات الطبي - الإصدار المطور + صيدلة وعلاج</title>
     
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -732,6 +732,11 @@
     /* ========================================= */
     /* ====== تصميم وضع الهاتف (Mobile Mode) === */
     /* ========================================= */
+
+    body.mobile-mode * {
+        touch-action: manipulation !important;
+    }
+
 
     body.mobile-mode {
         zoom: 100% !important; /* إلغاء التصغير في الهاتف */
@@ -6093,7 +6098,7 @@
         document.body.removeChild(link);
     }
 
-    function exportPurchaseForm(useShort, wordCount, fontSize) {
+function exportPurchaseForm(useShort, wordCount, fontSize) {
         const tableBody = document.getElementById("tableBody");
         const rows = tableBody.querySelectorAll("tr");
         
@@ -6102,154 +6107,136 @@
             return;
         }
 
-        // التحقق مما إذا كان وضع الهاتف مفعلاً
-        const isMobile = document.body.classList.contains('mobile-mode');
-
-        let css, headerContent, footerContent;
-
-        if (isMobile) {
-            // ========================================================
-            // 1. تصميم مخصص لوضع الهاتف (مضغوط ومرتب للصور والـ PDF)
-            // ========================================================
-            css = `
-                <style>
-                    @page Section1 { margin: 15px; }
-                    div.Section1 { page: Section1; direction: rtl; }
-                    body { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 11pt; direction: rtl; text-align: right; color: black; }
-                    .header-mobile { font-weight: bold; font-size: 12pt; margin-bottom: 8px; line-height: 1.4; }
-                    .title-mobile { text-align: center; font-weight: bold; font-size: 12pt; margin-bottom: 10px; }
-                    table.items-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-                    table.items-table th, table.items-table td { border: 1px solid black; padding: 4px; text-align: center; font-size: ${fontSize}pt; }
-                    table.items-table th { background-color: #f0f0f0; font-weight: bold; }
-                    
-                    /* تنسيقات التذييل (التواقيع) المضغوطة */
-                    .footer-mobile { margin-top: 10px; font-size: 11pt; }
-                    .sig-line { border: 0; border-top: 1px solid black; margin: 4px 0; }
-                    table.no-border { width: 100%; border-collapse: collapse; border: none; }
-                    table.no-border td { border: none; font-weight: bold; padding: 0; }
-                    .page-break { page-break-before: always; }
-                </style>
-            `;
-
-            headerContent = `
-                <div class="header-mobile">
-                    السيد مدير مستشفى ام قصر العام المحترم .<br>
-                    السيد مدير القسم الفني المحترم .
-                </div>
-                <div class="title-mobile">
-                    يرجى التفضل بالموافقة على شراء المواد التالية وبالأعداد المبينة ادناه : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / القسم : الصيدلة
-                </div>
-            `;
-
-            footerContent = `
-                <div class="footer-mobile">
-                    <div style="text-align: left; font-weight: bold; margin-bottom: 5px;">مقدم الطلب</div>
-                    <hr class="sig-line">
-                    
-                    <div style="font-weight: bold; margin-bottom: 2px;">مصادقة لجنة تقدير الحاجة :</div>
-                    <div style="text-align: center; font-weight: bold; margin-bottom: 10px;">- نؤيد الاحتياج وبالأعداد المذكورة اعلاه -</div>
-                    
-                    <table class="no-border" style="text-align: center; margin-bottom: 5px;">
-                        <tr>
-                            <td style="width:33%;">عضو</td>
-                            <td style="width:33%;">عضو</td>
-                            <td style="width:33%;">رئيس اللجنة</td>
-                        </tr>
-                    </table>
-                    
-                    <hr class="sig-line">
-                    <div style="font-weight: bold; margin-bottom: 5px; margin-top: 5px;">نؤيد توفر الاعتماد المالي ............................ المبلغ رقما وكتابتا ............................</div>
-                    
-                    <table class="no-border" style="margin-bottom: 5px;">
-                        <tr>
-                            <td style="text-align: right; width: 50%;">التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td style="text-align: left; width: 50%;">الاسم والتوقيع</td>
-                        </tr>
-                    </table>
-                    
-                    <hr class="sig-line">
-                    <table class="no-border" style="margin-top: 25px; margin-bottom: 5px;">
-                        <tr>
-                            <td style="text-align: right; width: 50%;">مصادقة المسؤول المباشر</td>
-                            <td style="text-align: left; width: 50%;">موافقة المدير</td>
-                        </tr>
-                    </table>
-                </div>
-            `;
-
-        } else {
-            // ========================================================
-            // 2. تصميم الوورد الأصلي للكمبيوتر (بدون أي تغيير)
-            // ========================================================
-            css = `
-                <style>
-                    @page Section1 { size: 8.5in 11.0in; margin: 0.5in; mso-header-margin: .3in; mso-footer-margin: .3in; }
-                    div.Section1 { page: Section1; direction: rtl; }
-                    body { font-family: "Times New Roman", serif; font-size: 12.0pt; direction: rtl; text-align: right; }
-                    p.MsoNormal { margin: 0in; margin-bottom: .0001pt; text-align: right; direction: rtl; unicode-bidi: embed; font-family: "Times New Roman", serif; font-size: 12.0pt; }
-                    table.items-table { width: 100%; border-collapse: collapse; mso-yfti-tbllook: 1184; mso-table-dir: bidi; }
-                    table.items-table td { border: solid black 1.0pt; padding: 3.75pt; text-align: center; font-family: "Times New Roman", serif; }
-                    .page-break { page-break-before: always; }
-                </style>
-            `;
-
-            headerContent = `
-                <p class=MsoNormal><strong><span lang=AR-SA style='font-size:14.0pt'>السيد مدير مستشفى ام قصر العام المحترم .</span></strong><br>
-                <span lang=AR-SA style='font-size:14.0pt'><strong>السيد مدير القسم الفني المحترم .</strong></span></p>
-                <div style='margin-top:15.0pt;margin-bottom:15.0pt'>
-                <p class=MsoNormal align=center><b><span lang=AR-SA style='font-size:12.0pt'>يرجى التفضل بالموافقة على شراء المواد التالية وبالأعداد المبينة ادناه :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / القسم : الصيدلة</span></b></p>
-                </div>
-            `;
-
-            footerContent = `
-                <p class=MsoNormal style='margin-bottom:14.0pt'><span lang=AR-SA style='font-size:14.0pt'>&nbsp;</span></p>
-                <div style='margin-top:5.0pt'>
-                    <div align=left>
-                        <table dir=ltr border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
-                         <tr><td style='padding:3.75pt 0in 7.5pt 0in; border:none; text-align:left;'>
-                          <p class=MsoNormal align=left style='text-align:left; direction:ltr;'><strong><span lang=AR-SA style='font-size:14.0pt'>مقدم الطلب</span></strong></p>
-                         </td></tr>
-                        </table>
-                    </div>
-                    <div class=MsoNormal align=center><hr size=2 width="100%" align=center></div>
-                    <p dir=RTL style='margin-top:7.5pt;margin-bottom:3.75pt; text-align:right;'><strong><span lang=AR-SA>مصادقة لجنة تقدير الحاجة :</span></strong></p>
-                    <p align=center dir=RTL style='margin-top:3.75pt'><b><span lang=AR-SA>- نؤيد الاحتياج وبالأعداد المذكورة اعلاه -</span></b></p>
-                    <div align=center>
-                        <table dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
-                         <tr>
-                          <td style='padding:7.5pt 0in 7.5pt 0in; border:none; width:33%;'><p class=MsoNormal align=center style='margin-top:30.0pt; text-align:center;'><b><span lang=AR-SA style='font-size:14.0pt'>عضو</span></b></p></td>
-                          <td style='padding:7.5pt 0in 7.5pt 0in; border:none; width:33%;'><p class=MsoNormal align=center style='margin-top:30.0pt; text-align:center;'><b><span lang=AR-SA style='font-size:14.0pt'>عضو</span></b></p></td>
-                          <td style='padding:7.5pt 0in 7.5pt 0in; border:none; width:33%;'><p class=MsoNormal align=center style='margin-top:30.0pt; text-align:center;'><b><span lang=AR-SA style='font-size:14.0pt'>رئيس اللجنة</span></b></p></td>
-                         </tr>
-                        </table>
-                    </div>
-                    <div class=MsoNormal align=center style='margin-top:7.5pt'><hr size=2 width="100%" align=center></div>
-                    <p dir=RTL style='margin-top:7.5pt;margin-bottom:7.5pt'><strong><span lang=AR-SA>نؤيد توفر الاعتماد المالي ............................ المبلغ رقما وكتابتا ............................</span></strong></p>
-                    <div align=right>
-                        <table dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
-                         <tr>
-                          <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'><p class=MsoNormal style='margin-top:11.25pt'><strong><span lang=AR-SA style='font-size:14.0pt'>التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></strong></p></td>
-                          <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'><p class=MsoNormal align=right style='margin-top:11.25pt;text-align:left'><strong><span lang=AR-SA style='font-size:14.0pt'>الاسم والتوقيع</span></strong></p></td>
-                         </tr>
-                        </table>
-                    </div>
-                    <div class=MsoNormal align=center style='margin-top:7.5pt'><hr size=2 width="100%" align=center></div>
-                    <div align=right>
-                        <table dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
-                         <tr>
-                          <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'><p class=MsoNormal style='margin-top:37.5pt'><b><span lang=AR-SA style='font-size:14.0pt'>مصادقة المسؤول المباشر</span></b></p></td>
-                          <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'><p class=MsoNormal align=center style='margin-top:37.5pt'><b><span lang=AR-SA style='font-size:14.0pt'>&nbsp;</span></b></p></td>
-                          <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'><p class=MsoNormal align=right style='margin-top:37.5pt;text-align:left'><b><span lang=AR-SA style='font-size:14.0pt'>موافقة المدير</span></b></p></td>
-                         </tr>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
+        const css = `
+            <style>
+                @page Section1 {
+                    size: 8.5in 11.0in; 
+                    margin: 0.5in; 
+                    mso-header-margin: .3in; 
+                    mso-footer-margin: .3in; 
+                }
+                div.Section1 {
+                    page: Section1;
+                    direction: rtl;
+                }
+                body {
+                    font-family: "Times New Roman", serif;
+                    font-size: 12.0pt;
+                    direction: rtl;
+                    text-align: right;
+                }
+                p.MsoNormal {
+                    margin: 0in;
+                    margin-bottom: .0001pt;
+                    text-align: right;
+                    direction: rtl;
+                    unicode-bidi: embed;
+                    font-family: "Times New Roman", serif;
+                    font-size: 12.0pt;
+                }
+                table.MsoNormalTable {
+                    width: 100%;
+                    border-collapse: collapse;
+                    mso-yfti-tbllook: 1184;
+                    mso-table-dir: bidi;
+                }
+                table.MsoNormalTable td {
+                    border: solid black 1.0pt;
+                    padding: 3.75pt;
+                    text-align: center;
+                    font-family: "Times New Roman", serif;
+                }
+                .page-break {
+                    page-break-before: always;
+                }
+            </style>
+        `;
 
         const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'>
-        <head><meta charset='utf-8'><title>Purchase Form</title>${css}</head><body lang=EN-US><div class="Section1">`;
+        <head><meta charset='utf-8'><title>Purchase Form</title>${css}</head><body lang=EN-US style='tab-interval:.5in'><div class="Section1">`;
         const postHtml = "</div></body></html>";
+
+        const headerContent = `
+            <p class=MsoNormal><strong><span lang=AR-SA style='font-size:14.0pt'>السيد مدير مستشفى ام قصر العام المحترم .</span></strong><br>
+            <span lang=AR-SA style='font-size:14.0pt'><strong>السيد مدير القسم الفني المحترم .</strong></span></p>
+
+            <div style='margin-top:15.0pt;margin-bottom:15.0pt'>
+            <p class=MsoNormal align=center><b><span lang=AR-SA style='font-size:12.0pt'>يرجى التفضل بالموافقة على شراء المواد التالية وبالأعداد المبينة ادناه :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / القسم : الصيدلة</span></b></p>
+            </div>
+        `;
+
+        const footerContent = `
+            <p class=MsoNormal style='margin-bottom:14.0pt'><span lang=AR-SA style='font-size:14.0pt'>&nbsp;</span></p>
+
+            <div style='margin-top:5.0pt'>
+                
+                <div align=left>
+                    <table class="MsoNormalTable signature-table" dir=ltr border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                     <tr>
+                      <td style='padding:3.75pt 0in 7.5pt 0in; border:none; text-align:left;'>
+                      <p class=MsoNormal align=left style='text-align:left; direction:ltr;'><strong><span lang=AR-SA style='font-size:14.0pt'>مقدم الطلب</span></strong></p>
+                      </td>
+                     </tr>
+                    </table>
+                </div>
+
+                <div class=MsoNormal align=center><hr size=2 width="100%" align=center></div>
+
+                <p dir=RTL style='margin-top:7.5pt;margin-bottom:3.75pt; text-align:right;'><strong><span lang=AR-SA>مصادقة لجنة تقدير الحاجة :</span></strong></p>
+                <p align=center dir=RTL style='margin-top:3.75pt'><b><span lang=AR-SA>- نؤيد الاحتياج وبالأعداد المذكورة اعلاه -</span></b></p>
+
+                <div align=center>
+                    <table class="MsoNormalTable signature-table" dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                     <tr>
+                      <td style='padding:7.5pt 0in 7.5pt 0in; border:none; width:33%;'>
+                      <p class=MsoNormal align=center style='margin-top:30.0pt; text-align:center;'><b><span lang=AR-SA style='font-size:14.0pt'>عضو</span></b></p>
+                      </td>
+                      <td style='padding:7.5pt 0in 7.5pt 0in; border:none; width:33%;'>
+                      <p class=MsoNormal align=center style='margin-top:30.0pt; text-align:center;'><b><span lang=AR-SA style='font-size:14.0pt'>عضو</span></b></p>
+                      </td>
+                      <td style='padding:7.5pt 0in 7.5pt 0in; border:none; width:33%;'>
+                      <p class=MsoNormal align=center style='margin-top:30.0pt; text-align:center;'><b><span lang=AR-SA style='font-size:14.0pt'>رئيس اللجنة</span></b></p>
+                      </td>
+                     </tr>
+                    </table>
+                </div>
+
+                <div class=MsoNormal align=center style='margin-top:7.5pt'><hr size=2 width="100%" align=center></div>
+
+                <p dir=RTL style='margin-top:7.5pt;margin-bottom:7.5pt'><strong><span lang=AR-SA>نؤيد توفر الاعتماد المالي ............................ المبلغ رقما وكتابتا ............................</span></strong></p>
+
+                <div align=right>
+                    <table class="MsoNormalTable signature-table" dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                     <tr>
+                      <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'>
+                      <p class=MsoNormal style='margin-top:11.25pt'><strong><span lang=AR-SA style='font-size:14.0pt'>التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></strong></p>
+                      </td>
+                      <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'>
+                      <p class=MsoNormal align=right style='margin-top:11.25pt;text-align:left'><strong><span lang=AR-SA style='font-size:14.0pt'>الاسم والتوقيع</span></strong></p>
+                      </td>
+                     </tr>
+                    </table>
+                </div>
+
+                <div class=MsoNormal align=center style='margin-top:7.5pt'><hr size=2 width="100%" align=center></div>
+
+                <div align=right>
+                    <table class="MsoNormalTable signature-table" dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                     <tr>
+                      <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'>
+                      <p class=MsoNormal style='margin-top:37.5pt'><b><span lang=AR-SA style='font-size:14.0pt'>مصادقة المسؤول المباشر</span></b></p>
+                      </td>
+                      <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'>
+                      <p class=MsoNormal align=center style='margin-top:37.5pt'><b><span lang=AR-SA style='font-size:14.0pt'>&nbsp;</span></b></p>
+                      </td>
+                      <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'>
+                      <p class=MsoNormal align=right style='margin-top:37.5pt;text-align:left'><b><span lang=AR-SA style='font-size:14.0pt'>موافقة المدير</span></b></p>
+                      </td>
+                     </tr>
+                    </table>
+                </div>
+            </div>
+        `;
 
         let htmlContent = "";
         const itemsPerPage = 8;
@@ -6265,19 +6252,19 @@
             htmlContent += headerContent;
 
             htmlContent += `
-                <table class="items-table" dir=rtl>
+                <div align=right>
+                <table class=MsoNormalTable dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%">
                  <thead>
                   <tr style='background:#E0E0E0'>
-                   <th><b><span lang=AR-SA style='font-size:${fontSize}pt'>ت</span></b></th>
-                   <th><b><span lang=AR-SA style='font-size:${fontSize}pt'>الرمز الوطني</span></b></th>
-                   <th><b><span lang=AR-SA style='font-size:${fontSize}pt'>اسم المادة</span></b></th>
-                   <th><b><span lang=AR-SA style='font-size:${fontSize}pt'>وحدة القياس</span></b></th>
-                   <th><b><span lang=AR-SA style='font-size:${fontSize}pt'>العدد</span></b></th>
-                   <th><b><span lang=AR-SA style='font-size:${fontSize}pt'>سعر المفرد</span></b></th>
-                   <th><b><span lang=AR-SA style='font-size:${fontSize}pt'>المجموع</span></b></th>
+                   <td><b><span lang=AR-SA style='font-size:${fontSize}pt'>ت</span></b></td>
+                   <td><b><span lang=AR-SA style='font-size:${fontSize}pt'>الرمز الوطني</span></b></td>
+                   <td><b><span lang=AR-SA style='font-size:${fontSize}pt'>اسم المادة</span></b></td>
+                   <td><b><span lang=AR-SA style='font-size:${fontSize}pt'>وحدة القياس</span></b></td>
+                   <td><b><span lang=AR-SA style='font-size:${fontSize}pt'>العدد</span></b></td>
+                   <td><b><span lang=AR-SA style='font-size:${fontSize}pt'>سعر المفرد</span></b></td>
+                   <td><b><span lang=AR-SA style='font-size:${fontSize}pt'>المجموع</span></b></td>
                   </tr>
                  </thead>
-                 <tbody>
             `;
 
             for (let k = 0; k < itemsPerPage; k++) {
@@ -6322,7 +6309,7 @@
                 </tr>
             `;
 
-            htmlContent += `</tbody></table>`;
+            htmlContent += `</table></div>`;
             htmlContent += footerContent;
         }
 

@@ -674,6 +674,21 @@
         padding: 10px;
     }
 
+    /* إيقاف حركة متصفح الويب المزعجة (السحب للأعلى والأسفل للصفحة كاملة) */
+    body.mobile-mode {
+        overscroll-behavior-y: none !important;
+        height: 100dvh !important; /* ياخذ ارتفاع الشاشة الفعلي بدقة */
+        overflow: hidden !important; /* يقفل حركة الصفحة بالكامل */
+    }
+
+    /* جعل السحب يقتصر على القائمة بداخل البرنامج فقط وبشكل ناعم */
+    body.mobile-mode .container {
+        height: 100dvh !important;
+        overflow-y: auto !important; /* يسمح بسحب القائمة فقط */
+        -webkit-overflow-scrolling: touch !important; /* يخلي السحب ناعم جداً مثل تطبيقات الآيفون */
+        padding-bottom: 90px !important; /* مساحة حتى الشريط السفلي ما يغطي آخر مادة */
+    }
+
     body.mobile-mode .container {
         width: 100%;
         padding: 10px;

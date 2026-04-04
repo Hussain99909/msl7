@@ -1194,7 +1194,55 @@
     body.mobile-mode #mainTableGrandTotal::before {
         content: "💵 "; /* أيقونة بديلة */
     }
+    
+    /* ========================================================= */
+    /* === تحويل البرنامج لتطبيق هاتف حقيقي (تثبيت القوائم) === */
+    /* ========================================================= */
 
+    /* 1. تثبيت حجم الشاشة بالكامل ومنع الصفحة من الحركة */
+    body.mobile-mode {
+        height: 100vh !important;
+        height: 100dvh !important; /* لدعم متصفحات الهواتف الحديثة بدقة (يتجاهل شريط الرابط) */
+        overflow: hidden !important; /* يمنع سحب الصفحة بأكملها للأعلى أو الأسفل */
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* 2. ترتيب الحاوية الرئيسية لتعمل بنظام الأعمدة (Flex) */
+    body.mobile-mode .container {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 10px 10px 70px 10px !important; /* 70 بكسل من الأسفل لترك مساحة للشريط السفلي */
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    /* 3. منع انضغاط أو اختفاء الأجزاء العلوية الثابتة */
+    body.mobile-mode .user-top-bar,
+    body.mobile-mode #userTopBar + div, /* شريط البحث والمجموع */
+    body.mobile-mode .icons-wrapper {
+        flex-shrink: 0 !important; /* يمنع هذه العناصر من التصاغر */
+    }
+
+    /* 4. جعل منطقة قائمة المواد هي الوحيدة القابلة للسحب (Scroll) */
+    body.mobile-mode .table-responsive {
+        flex-grow: 1 !important; /* تأخذ كل المساحة المتبقية من الشاشة */
+        overflow-y: auto !important; /* تفعيل السحب العمودي هنا فقط */
+        overflow-x: hidden !important;
+        padding-bottom: 20px !important;
+        margin-bottom: 0 !important;
+        -webkit-overflow-scrolling: touch !important; /* جعل السحب ناعماً جداً على هواتف الايفون والاندرويد */
+    }
+
+    /* 5. إخفاء شريط التمرير الجانبي (Scrollbar) لإعطاء مظهر التطبيقات الاحترافية */
+    body.mobile-mode .table-responsive::-webkit-scrollbar {
+        display: none !important;
+    }
+    body.mobile-mode .table-responsive {
+        -ms-overflow-style: none !important;  /* لمتصفحات IE و Edge */
+        scrollbar-width: none !important;  /* لمتصفح Firefox */
+    }
     </style>
 </head>
 <body>

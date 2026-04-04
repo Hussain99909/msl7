@@ -1196,52 +1196,88 @@
     }
     
     /* ========================================================= */
-    /* === تحويل البرنامج لتطبيق هاتف حقيقي (تثبيت القوائم) === */
+    /* === 1. جعل الشاشة ثابتة كالتطبيقات وتمرير الجدول فقط ==== */
     /* ========================================================= */
-
-    /* 1. تثبيت حجم الشاشة بالكامل ومنع الصفحة من الحركة */
     body.mobile-mode {
         height: 100vh !important;
-        height: 100dvh !important; /* لدعم متصفحات الهواتف الحديثة بدقة (يتجاهل شريط الرابط) */
-        overflow: hidden !important; /* يمنع سحب الصفحة بأكملها للأعلى أو الأسفل */
-        padding: 0 !important;
-        margin: 0 !important;
+        height: 100dvh !important; /* دعم الهواتف الحديثة */
+        overflow: hidden !important; /* منع تمرير الصفحة بالكامل */
     }
 
-    /* 2. ترتيب الحاوية الرئيسية لتعمل بنظام الأعمدة (Flex) */
     body.mobile-mode .container {
         height: 100% !important;
         display: flex !important;
         flex-direction: column !important;
-        padding: 10px 10px 70px 10px !important; /* 70 بكسل من الأسفل لترك مساحة للشريط السفلي */
-        box-sizing: border-box !important;
         overflow: hidden !important;
+        padding: 10px 10px 0 10px !important; /* إلغاء الحواف السفلية المزعجة */
+        box-sizing: border-box !important;
     }
 
-    /* 3. منع انضغاط أو اختفاء الأجزاء العلوية الثابتة */
+    /* حماية الأشرطة العلوية من الانضغاط عند امتلاء الجدول */
     body.mobile-mode .user-top-bar,
-    body.mobile-mode #userTopBar + div, /* شريط البحث والمجموع */
+    body.mobile-mode #userTopBar + div,
     body.mobile-mode .icons-wrapper {
-        flex-shrink: 0 !important; /* يمنع هذه العناصر من التصاغر */
+        flex-shrink: 0 !important; 
     }
 
-    /* 4. جعل منطقة قائمة المواد هي الوحيدة القابلة للسحب (Scroll) */
+    /* جعل منطقة الجدول هي الوحيدة القابلة للسحب للأعلى والأسفل */
     body.mobile-mode .table-responsive {
-        flex-grow: 1 !important; /* تأخذ كل المساحة المتبقية من الشاشة */
-        overflow-y: auto !important; /* تفعيل السحب العمودي هنا فقط */
+        flex-grow: 1 !important; /* تمدد لأخذ المساحة المتبقية */
+        overflow-y: auto !important; /* تفعيل التمرير العمودي هنا فقط */
         overflow-x: hidden !important;
-        padding-bottom: 20px !important;
-        margin-bottom: 0 !important;
-        -webkit-overflow-scrolling: touch !important; /* جعل السحب ناعماً جداً على هواتف الايفون والاندرويد */
+        padding-bottom: 80px !important; /* ترك مساحة للشريط السفلي */
+        -webkit-overflow-scrolling: touch !important; /* تمرير ناعم لأجهزة آيفون */
+        border: none !important;
     }
 
-    /* 5. إخفاء شريط التمرير الجانبي (Scrollbar) لإعطاء مظهر التطبيقات الاحترافية */
-    body.mobile-mode .table-responsive::-webkit-scrollbar {
-        display: none !important;
+    /* ========================================================= */
+    /* === 2. تثبيت شريط البحث والمجموع وحمايته من التشوه ====== */
+    /* ========================================================= */
+    
+    /* الحاوية التي تضم البحث والمجموع */
+    body.mobile-mode #userTopBar + div {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        gap: 8px !important;
+        margin: 0 0 10px 0 !important;
+        box-sizing: border-box !important;
     }
-    body.mobile-mode .table-responsive {
-        -ms-overflow-style: none !important;  /* لمتصفحات IE و Edge */
-        scrollbar-width: none !important;  /* لمتصفح Firefox */
+
+    /* شريط البحث (يأخذ 65% من المساحة بثبات) */
+    body.mobile-mode .search-container {
+        flex: 1 1 65% !important; 
+        min-width: 0 !important; 
+        margin: 0 !important;
+    }
+
+    body.mobile-mode .search-box {
+        width: 100% !important;
+        height: 40px !important;
+    }
+
+    /* مربع المجموع الكلي (يأخذ 35% من المساحة بثبات ولا يتمدد) */
+    body.mobile-mode #userTopBar + div > div:nth-child(2) {
+        flex: 0 0 35% !important; 
+        max-width: 35% !important; 
+        height: 40px !important;
+        padding: 0 5px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        overflow: hidden !important; /* إخفاء أي زيادة تكسر المربع */
+    }
+
+    /* رقم المجموع (إذا أصبح بالمليارات سيتم إضافة 3 نقاط (...) ولن يدفع شريط البحث) */
+    body.mobile-mode #mainTableGrandTotal {
+        font-size: 14px !important;
+        font-weight: bold !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important; /* وضع نقاط للأرقام العملاقة */
+        max-width: 100% !important;
+        display: inline-block !important;
     }
     </style>
 </head>

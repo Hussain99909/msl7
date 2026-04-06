@@ -203,10 +203,10 @@
         /* --- تنسيق الحاوية (الشبكة) --- */
         .icons-wrapper {
             display: grid;
-            /* تم التعديل إلى 9 أعمدة لاستيعاب جميع الأزرار بشكل متناسق */
-            grid-template-columns: repeat(9, 130px); 
+            /* تم التعديل إلى 10 أعمدة لتصبح 10 أيقونات في السطر الأول و 10 في الثاني */
+            grid-template-columns: repeat(10, 120px); 
             justify-content: center; 
-            gap: 15px; 
+            gap: 10px; /* تقليل المسافة قليلاً لضمان احتواء الشاشة للـ 10 أيقونات براحة */
             margin: 20px auto;
         }
 
@@ -1194,6 +1194,105 @@
     body.mobile-mode #mainTableGrandTotal::before {
         content: ""; 
     }
+
+    /* ================================================== */
+        /* === تصميم الدردشة الذكي لوضع الهاتف (Sliding) === */
+        /* ================================================== */
+        
+        /* ================================================== */
+        /* === إصلاح أبعاد نافذة الدردشة في الموبايل === */
+        /* ================================================== */
+        
+        body.mobile-mode #chatModal .modal-content {
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important; /* قياس دقيق للهواتف الحديثة لمنع التمدد */
+            max-width: 100% !important;
+            max-height: 100% !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        body.mobile-mode .chat-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            overflow: hidden;
+            display: block; 
+        }
+
+        /* قائمة الأسماء تأخذ الشاشة وتسمح بالتمرير السلس */
+        body.mobile-mode .chat-users-list {
+            width: 100%;
+            height: 100%;
+            border-left: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            overflow-y: auto;
+            padding-bottom: 20px;
+            background: white;
+        }
+
+        /* شاشة المحادثة تنزلق من اليمين لتغطي الأسماء */
+        body.mobile-mode .chat-main {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background-color: #e5ddd5;
+            transform: translateX(100%); /* مخفية خارج الشاشة يميناً */
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* الكلاس الذي سنضيفه برمجياً لإدخال الشاشة */
+        body.mobile-mode .chat-main.active-mobile-chat {
+            transform: translateX(0); 
+        }
+
+        /* إظهار زر الرجوع في الموبايل فقط */
+        body.mobile-mode #mobileChatBackBtn {
+            display: block !important;
+        }
+
+        /* === القائمة المنبثقة للمرفقات (Bottom Sheet) === */
+        .attachment-menu-popup {
+            position: absolute;
+            bottom: 65px; 
+            right: 15px;
+            background: white;
+            border-radius: 20px;
+            padding: 15px 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: none; 
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+        .attachment-menu-popup.show {
+            display: flex;
+            animation: slideUpAttach 0.2s ease-out forwards;
+        }
+        @keyframes slideUpAttach {
+            from { opacity: 0; transform: translateY(20px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        /* توافق القائمة المنبثقة مع الوضع الليلي */
+        body.dark-mode .attachment-menu-popup {
+            background: #2a2a2a;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
     
     /* ========================================================= */
     /* === 1. جعل الشاشة ثابتة كالتطبيقات وتمرير الجدول فقط ==== */
@@ -1279,6 +1378,243 @@
         max-width: 100% !important;
         display: inline-block !important;
     }
+    
+    /* ========================================================= */
+    /* === إصلاح توافق الوضع الليلي مع وضع الهاتف (Dark & Mobile) === */
+    /* ========================================================= */
+    
+    /* خلفية التطبيق في الوضعين */
+    body.dark-mode.mobile-mode {
+        background: #121212 !important;
+    }
+
+    /* خلفية البطاقات (الصفوف) وإطارها */
+    body.dark-mode.mobile-mode #mainTable tr {
+        background: #1e1e1e !important;
+        border-color: #333 !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+    }
+
+    /* اسم المادة */
+    body.dark-mode.mobile-mode #mainTable td:nth-child(2) input {
+        color: #e0e0e0 !important;
+    }
+
+    /* العناوين الثابتة مثل (رمز: ، الاحتياج ، السعر) */
+    body.dark-mode.mobile-mode #mainTable td::before {
+        color: #aaa !important;
+    }
+
+    /* حقول إدخال الاحتياج والسعر داخل البطاقات */
+    body.dark-mode.mobile-mode #mainTable td:nth-child(5) input,
+    body.dark-mode.mobile-mode #mainTable td:nth-child(10) input {
+        background: #333 !important;
+        color: #fff !important;
+        border-color: #555 !important;
+    }
+
+    /* الشريط السفلي (Bottom Bar) */
+    body.dark-mode.mobile-mode .controls {
+        background: #1e1e1e !important;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.5) !important;
+        border-top: 1px solid #333 !important;
+    }
+
+    /* الخط الفاصل الدقيق تحت الرمز الوطني */
+    body.dark-mode.mobile-mode #mainTable td:nth-child(3) {
+        border-bottom-color: #333 !important;
+    }
+
+    /* ================================================================== */
+    /* === تصميم وضع الهاتف لنوافذ (احتياج صفر) و (فوق الحاجة) === */
+    /* ================================================================== */
+
+    /* إلغاء العرض الثابت للجدول وجعله مرناً */
+    body.mobile-mode #zeroNeedModal table,
+    body.mobile-mode #aboveNeedModal table {
+        min-width: 100% !important;
+        display: block;
+    }
+
+    /* إخفاء رأس الجدول في وضع الهاتف */
+    body.mobile-mode #zeroNeedModal thead,
+    body.mobile-mode #aboveNeedModal thead {
+        display: none !important;
+    }
+
+    body.mobile-mode #zeroNeedModal tbody,
+    body.mobile-mode #aboveNeedModal tbody {
+        display: block;
+        width: 100%;
+    }
+
+    /* تحويل الصف إلى بطاقة (Card) */
+    body.mobile-mode #zeroNeedModal tr,
+    body.mobile-mode #aboveNeedModal tr {
+        display: flex !important;
+        flex-wrap: wrap;
+        background: #fff;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        position: relative;
+        border: 1px solid #e8e8e8;
+    }
+
+    /* 1. إخفاء التسلسل لتوفير المساحة */
+    body.mobile-mode #zeroNeedModal td:nth-child(1),
+    body.mobile-mode #aboveNeedModal td:nth-child(1) {
+        display: none !important;
+    }
+
+    /* 2. اسم المادة (العنوان الرئيسي للبطاقة) */
+    body.mobile-mode #zeroNeedModal td:nth-child(2),
+    body.mobile-mode #aboveNeedModal td:nth-child(2) {
+        width: 100%;
+        border: none;
+        font-size: 16px;
+        font-weight: bold;
+        color: #2c3e50;
+        padding: 0 0 10px 40px; /* ترك مساحة لزر الحذف */
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 10px;
+        text-align: right;
+        display: block;
+    }
+
+    /* 3 & 4. الرمز الوطني والوحدة (بجانب بعضهما) */
+    body.mobile-mode #zeroNeedModal td:nth-child(3),
+    body.mobile-mode #zeroNeedModal td:nth-child(4),
+    body.mobile-mode #aboveNeedModal td:nth-child(3),
+    body.mobile-mode #aboveNeedModal td:nth-child(4) {
+        width: 50%;
+        border: none;
+        font-size: 13px;
+        color: #7f8c8d;
+        padding: 5px 0;
+        display: block;
+        text-align: right;
+    }
+    body.mobile-mode #zeroNeedModal td:nth-child(3)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(3)::before { content: "الرمز: "; font-weight: bold; color: #555; }
+    body.mobile-mode #zeroNeedModal td:nth-child(4)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(4)::before { content: "الوحدة: "; font-weight: bold; color: #555; }
+
+    /* 5 & 6. الاحتياج الشهري والكمية (حقول الإدخال جنباً إلى جنب) */
+    body.mobile-mode #zeroNeedModal td:nth-child(5),
+    body.mobile-mode #zeroNeedModal td:nth-child(6),
+    body.mobile-mode #aboveNeedModal td:nth-child(5),
+    body.mobile-mode #aboveNeedModal td:nth-child(6) {
+        width: 50%;
+        border: none;
+        padding: 10px 5px;
+        display: block;
+        box-sizing: border-box;
+    }
+
+    /* إضافة عناوين توضيحية فوق حقول الإدخال */
+    body.mobile-mode #zeroNeedModal td:nth-child(5)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(5)::before { content: "الاحتياج الشهري"; display: block; font-size: 12px; color: #555; font-weight: bold; margin-bottom: 5px; text-align: center; }
+    body.mobile-mode #zeroNeedModal td:nth-child(6)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(6)::before { content: "الكمية للشراء"; display: block; font-size: 12px; color: #555; font-weight: bold; margin-bottom: 5px; text-align: center; }
+
+    body.mobile-mode .zn-table-input {
+        width: 100% !important;
+        height: 40px;
+        font-size: 15px;
+    }
+
+    /* 7. حقل السبب (يأخذ العرض بالكامل أسفل البطاقة) */
+    body.mobile-mode #zeroNeedModal td:nth-child(7),
+    body.mobile-mode #aboveNeedModal td:nth-child(7) {
+        width: 100%;
+        border: none;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 10px;
+        margin-top: 10px;
+        display: block;
+        clear: both; /* لضمان نزوله أسفل الحقول السابقة */
+    }
+
+    body.mobile-mode #zeroNeedModal td:nth-child(7)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(7)::before { 
+        content: "السبب:"; 
+        display: block; 
+        font-size: 13px; 
+        color: #555; 
+        font-weight: bold; 
+        margin-bottom: 8px; 
+        text-align: right; 
+    }
+
+    /* تنسيق الحاوية التي تضم مربع النص وزر الاختيار ▼ */
+    body.mobile-mode #zeroNeedModal td:nth-child(7) > div,
+    body.mobile-mode #aboveNeedModal td:nth-child(7) > div {
+        display: flex;
+        width: 100%;
+        gap: 8px;
+        align-items: center;
+    }
+
+    /* 🌟 السطر السحري: منع مربع النص من التمدد وقص النص الطويل بـ (...) */
+    body.mobile-mode #zeroNeedModal td:nth-child(7) input[type="text"],
+    body.mobile-mode #aboveNeedModal td:nth-child(7) input[type="text"] {
+        flex: 1; /* يأخذ المساحة المتبقية فقط */
+        min-width: 0; /* ضروري جداً لمنع الـ flexbox من التمدد بسبب النص الطويل */
+        text-overflow: ellipsis; /* إضافة نقاط (...) إذا كان النص طويلاً */
+        white-space: nowrap; /* منع نزول النص لسطر جديد داخل الحقل */
+        overflow: hidden; /* إخفاء النص الزائد */
+        font-size: 13px !important;
+    }
+
+    /* زر القائمة المنسدلة للأسباب الجاهزة */
+    body.mobile-mode #zeroNeedModal td:nth-child(7) select,
+    body.mobile-mode #aboveNeedModal td:nth-child(7) select {
+        flex-shrink: 0; /* يمنع الزر من الانضغاط */
+        width: 45px !important;
+    }y.mobile-mode #aboveNeedModal td:nth-child(7)::before { content: "السبب:"; display: block; font-size: 13px; color: #555; font-weight: bold; margin-bottom: 8px; text-align: right; }
+
+    /* 8. زر الحذف (في أعلى يسار البطاقة) */
+    body.mobile-mode #zeroNeedModal td:nth-child(8),
+    body.mobile-mode #aboveNeedModal td:nth-child(8) {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 0;
+        width: auto;
+        border: none;
+        display: block !important;
+    }
+    body.mobile-mode #zeroNeedModal td:nth-child(8) button,
+    body.mobile-mode #aboveNeedModal td:nth-child(8) button {
+        background: #ffeaa7;
+        color: #e74c3c !important;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    /* --- توافق الوضع الليلي لهذه البطاقات --- */
+    body.dark-mode.mobile-mode #zeroNeedModal tr,
+    body.dark-mode.mobile-mode #aboveNeedModal tr {
+        background: #1e1e1e !important;
+        border-color: #333 !important;
+    }
+    body.dark-mode.mobile-mode #zeroNeedModal td:nth-child(2),
+    body.dark-mode.mobile-mode #aboveNeedModal td:nth-child(2) {
+        color: #64b5f6;
+        border-bottom-color: #333;
+    }
+    body.dark-mode.mobile-mode #zeroNeedModal td:nth-child(7),
+    body.dark-mode.mobile-mode #aboveNeedModal td:nth-child(7) {
+        border-top-color: #333;
+    }
+    body.dark-mode.mobile-mode #zeroNeedModal td::before,
+    body.dark-mode.mobile-mode #aboveNeedModal td::before {
+        color: #aaa !important;
+    }
+
     </style>
 </head>
 <body>
@@ -1375,6 +1711,13 @@
         <div class="icon-box" style="background: linear-gradient(135deg, #e84393, #d63031);" onclick="openAboveNeedModal()">
             شراء مواد<br>فوق الحاجة
         </div>
+        <div class="icon-box" style="background: linear-gradient(135deg, #00C9FF, #92FE9D); font-size: 11px; color: #333;" onclick="openZeroNeedMedModal()">
+            شراء أدوية<br>احتياج صفر
+        </div>
+        <div class="icon-box" style="background: linear-gradient(135deg, #F5AF19, #F12711);" onclick="openAboveNeedMedModal()">
+            شراء أدوية<br>فوق الحاجة
+        </div>
+
         <div class="icon-box" style="background: linear-gradient(135deg, #e67e22, #d35400);" onclick="openEvaluationModal()">نظام الفحص<br>والتقييم</div>
         <div class="icon-box ic-9" onclick="openSystemMenu()">
             <span>بيانات النظام</span>
@@ -1459,7 +1802,10 @@
 
             <div class="chat-main" id="chatMainArea">
                 <div class="chat-header">
-                    <span id="chatHeaderName">اختر مستخدماً للمراسلة</span>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <button id="mobileChatBackBtn" onclick="closeMobileChat()" style="display:none; background:none; border:none; font-size:22px; cursor:pointer;">➔</button>
+                        <span id="chatHeaderName">اختر مستخدماً للمراسلة</span>
+                    </div>
                     <div>
                         <button onclick="openSharedFilesModal()" title="الملفات المشتركة" style="background:none; border:none; font-size:20px; cursor:pointer;">📁</button>
                         <button onclick="deleteAllMessages()" title="مسح المحادثة بالكامل" style="background:none; border:none; font-size:20px; cursor:pointer; color:#e74c3c; margin-right: 10px;">🗑️</button>
@@ -1473,27 +1819,30 @@
                     </div>
                 </div>
 
-                <div class="chat-input-area" id="chatInputArea" style="display:none;">
-                    <div class="chat-actions">
-                        <button class="btn-chat-action btn-db-share" title="إرسال قاعدة البيانات الحالية" onclick="shareSystemDB()">🗄️</button>
-                        <button class="btn-chat-action btn-file" title="إرسال جلسة عمل" onclick="openShareSessionMenu()">📑</button>
-                        <button class="btn-chat-action btn-attach" title="إرسال صورة/ملف" onclick="document.getElementById('chatFileInput').click()">📎</button>
-                        <button class="btn-chat-action btn-mic" id="btnRecord" title="اضغط مع الاستمرار لتسجيل الصوت" 
-                            onmousedown="startRecording(event)" 
-                            onmouseup="stopRecording(event)" 
-                            onmouseleave="cancelRecordingIfLeft(event)"
-                            ontouchstart="startRecording(event)" 
-                            ontouchend="stopRecording(event)">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                                <path d="M11.999 14.942c2.001 0 3.531-1.53 3.531-3.531V4.35c0-2.001-1.53-3.531-3.531-3.531S8.468 2.349 8.468 4.35v7.061c0 2.001 1.53 3.531 3.531 3.531zM22.225 11.411h-1.604c0 4.294-3.235 7.91-7.513 8.471v3.297h-2.218v-3.297c-4.278-.561-7.513-4.177-7.513-8.471H1.775c0 4.965 3.824 9.079 8.653 9.773v4.22h3.143v-4.22c4.829-.694 8.654-4.808 8.654-9.773z"/>
-                            </svg>
-                        </button>
+                <div class="chat-input-area" id="chatInputArea" style="display:none; position: relative;">
+                    
+                    <button class="btn-chat-action btn-attach-toggle" style="background: #95a5a6; color: white;" onclick="toggleAttachmentMenu()">📎</button>
+                    
+                    <div id="attachmentMenu" class="attachment-menu-popup">
+                        <button class="btn-chat-action btn-db-share" title="إرسال قاعدة البيانات" onclick="shareSystemDB(); toggleAttachmentMenu();">🗄️</button>
+                        <button class="btn-chat-action btn-file" title="إرسال جلسة عمل" onclick="openShareSessionMenu(); toggleAttachmentMenu();">📑</button>
+                        <button class="btn-chat-action btn-attach" title="إرسال صورة/ملف" style="background:#f39c12; color:white;" onclick="document.getElementById('chatFileInput').click(); toggleAttachmentMenu();">🖼️</button>
                     </div>
                     
-                    <input type="text" id="chatTextInput" class="chat-input" placeholder="اكتب رسالة..." onkeyup="if(event.key==='Enter') sendTextMessage()" oninput="handleTyping()">
-                    <span id="recordingIndicator" class="recording-indicator">جاري التسجيل...</span>
+                    <input type="text" id="chatTextInput" class="chat-input" placeholder="اكتب رسالة..." onkeyup="if(event.key==='Enter') sendTextMessage()" oninput="handleTypingAndMic()">
                     
-                    <button class="btn-chat-action btn-send" onclick="sendTextMessage()">➤</button>
+                    <span id="recordingIndicator" class="recording-indicator">🎙️ جاري التسجيل...</span>
+                    
+                    <button class="btn-chat-action btn-mic" id="btnRecord" title="اضغط للتسجيل" 
+                        onmousedown="startRecording(event)" onmouseup="stopRecording(event)" 
+                        onmouseleave="cancelRecordingIfLeft(event)" ontouchstart="startRecording(event)" 
+                        ontouchend="stopRecording(event)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M11.999 14.942c2.001 0 3.531-1.53 3.531-3.531V4.35c0-2.001-1.53-3.531-3.531-3.531S8.468 2.349 8.468 4.35v7.061c0 2.001 1.53 3.531 3.531 3.531zM22.225 11.411h-1.604c0 4.294-3.235 7.91-7.513 8.471v3.297h-2.218v-3.297c-4.278-.561-7.513-4.177-7.513-8.471H1.775c0 4.965 3.824 9.079 8.653 9.773v4.22h3.143v-4.22c4.829-.694 8.654-4.808 8.654-9.773z"/>
+                        </svg>
+                    </button>
+                    
+                    <button class="btn-chat-action btn-send" id="btnSendText" style="display:none;" onclick="sendTextMessage()">➤</button>
                     
                     <input type="file" id="chatFileInput" style="display:none;" onchange="handleChatFileUpload(this)">
                 </div>
@@ -2161,6 +2510,108 @@
         <div class="modal-title">📂 إدارة جلسات الكتب الرسمية</div>
         <ul id="ol_sessionsListUl" class="sessions-list"></ul>
         <button class="btn-cancel" onclick="ol_closeSessionsModal()" style="margin-top:15px;">إغلاق</button>
+    </div>
+</div>
+
+<div id="zeroNeedMedModal" class="modal-overlay" style="z-index: 2400;">
+    <div class="modal-content wide-modal" style="width: 98%; max-width: 1400px; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; position: sticky; top: -30px; padding-top: 30px; background-color: inherit; z-index: 100;">
+            <div style="font-size: 18px; font-weight: bold; color: #2c3e50; white-space: nowrap;">💊 قائمة شراء أدوية احتياجها صفر</div>
+            
+            <div class="zn-search-container" style="margin: 0; flex-grow: 1; max-width: 350px;">
+                <input type="text" id="znm_searchInput" class="search-box" style="padding: 10px; font-size: 14px;" placeholder="ابحث عن دواء لإضافته..." autocomplete="off">
+                <ul id="znm_suggestions" class="zn-suggestions-list"></ul>
+            </div>
+
+            <div class="eval-action-buttons" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                <button class="eval-btn eval-btn-clear" style="padding: 8px 12px; font-size: 13px;" onclick="znm_clearTable()">🗑️ تفريغ</button>
+                <button class="eval-btn eval-btn-session" style="padding: 8px 12px; font-size: 13px;" onclick="znm_openSessionsModal()">📂 الجلسات</button>
+                <button class="eval-btn" style="background:#2980b9; padding: 8px 12px; font-size: 13px;" onclick="znm_saveCurrentSession()">💾 حفظ</button>
+                <button onclick="closeZeroNeedMedModal()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#e74c3c; margin-right: 10px;" title="إغلاق النافذة">❌</button>
+            </div>
+        </div>
+
+        <table style="background:white; width:100%; table-layout: fixed; border-collapse: collapse; min-width: 1100px;">
+            <thead style="position: sticky; top: 60px; z-index: 10;">
+                <tr>
+                    <th style="width: 40px;">ت</th>
+                    <th style="width: 32%;">اسم الدواء</th> 
+                    <th style="width: 100px;">الرمز الوطني</th>
+                    <th style="width: 80px;">وحدة التعبئة</th>
+                    <th style="width: 90px; font-size: 12px;">الاحتياج الشهري</th> 
+                    <th style="width: 90px; font-size: 12px;">الكمية المراد شراؤها</th> 
+                    <th style="width: 28%;">السبب <button onclick="znm_openReasonManager()" style="background:none; border:none; cursor:pointer; font-size:16px; margin-right:5px;">⚙️</button></th> 
+                    <th style="width: 45px;">X</th>
+                </tr>
+            </thead>
+            <tbody id="znm_tableBody"></tbody>
+        </table>
+        <button class="eval-btn eval-btn-export" onclick="znm_exportToWord()" style="background:#27ae60; margin-top: 20px;">📄 تصدير الكتاب الرسمي (Word)</button>
+    </div>
+</div>
+
+<div id="znm_reasonManagerModal" class="modal-overlay" style="z-index: 3500;">
+    <div class="modal-content"><div class="modal-title">⚙️ إدارة الأسباب الجاهزة (أدوية احتياج صفر)</div>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;"><input type="text" id="znm_newReasonInput" class="search-box" style="flex: 1; padding: 10px;" placeholder="اكتب سبباً جديداً..."><button class="btn-add-item" onclick="znm_addReason()">إضافة</button></div>
+        <ul id="znm_reasonsListUl" class="sessions-list" style="max-height: 250px; overflow-y: auto; text-align: right; padding: 0;"></ul>
+        <div style="margin-top:15px;"><button class="btn-cancel" onclick="znm_closeReasonManager()">إغلاق وحفظ</button></div>
+    </div>
+</div>
+<div id="znm_sessionsModal" class="modal-overlay" style="z-index: 3600;">
+    <div class="modal-content"><div class="modal-title">📂 جلسات أدوية احتياج صفر</div>
+        <ul id="znm_sessionsListUl" class="sessions-list" style="max-height: 250px; overflow-y: auto; text-align: right; padding: 0;"></ul>
+        <div style="margin-top:15px;"><button class="btn-cancel" onclick="znm_closeSessionsModal()">إغلاق</button></div>
+    </div>
+</div>
+
+<div id="aboveNeedMedModal" class="modal-overlay" style="z-index: 2400;">
+    <div class="modal-content wide-modal" style="width: 98%; max-width: 1400px; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; position: sticky; top: -30px; padding-top: 30px; background-color: inherit; z-index: 100;">
+            <div style="font-size: 18px; font-weight: bold; color: #2c3e50; white-space: nowrap;">💊 قائمة شراء أدوية فوق الحاجة</div>
+            
+            <div class="zn-search-container" style="margin: 0; flex-grow: 1; max-width: 350px;">
+                <input type="text" id="anm_searchInput" class="search-box" style="padding: 10px; font-size: 14px;" placeholder="ابحث عن دواء لإضافته..." autocomplete="off">
+                <ul id="anm_suggestions" class="zn-suggestions-list"></ul>
+            </div>
+
+            <div class="eval-action-buttons" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                <button class="eval-btn eval-btn-clear" style="padding: 8px 12px; font-size: 13px;" onclick="anm_clearTable()">🗑️ تفريغ</button>
+                <button class="eval-btn eval-btn-session" style="padding: 8px 12px; font-size: 13px;" onclick="anm_openSessionsModal()">📂 الجلسات</button>
+                <button class="eval-btn" style="background:#2980b9; padding: 8px 12px; font-size: 13px;" onclick="anm_saveCurrentSession()">💾 حفظ</button>
+                <button onclick="closeAboveNeedMedModal()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#e74c3c; margin-right: 10px;" title="إغلاق النافذة">❌</button>
+            </div>
+        </div>
+
+        <table style="background:white; width:100%; table-layout: fixed; border-collapse: collapse; min-width: 1100px;">
+            <thead style="position: sticky; top: 60px; z-index: 10;">
+                <tr>
+                    <th style="width: 40px;">ت</th>
+                    <th style="width: 32%;">اسم الدواء</th> 
+                    <th style="width: 100px;">الرمز الوطني</th>
+                    <th style="width: 80px;">وحدة التعبئة</th>
+                    <th style="width: 90px; font-size: 12px;">الاحتياج الشهري</th> 
+                    <th style="width: 90px; font-size: 12px;">الاحتياج للشراء</th> 
+                    <th style="width: 28%;">السبب <button onclick="anm_openReasonManager()" style="background:none; border:none; cursor:pointer; font-size:16px; margin-right:5px;">⚙️</button></th> 
+                    <th style="width: 45px;">X</th>
+                </tr>
+            </thead>
+            <tbody id="anm_tableBody"></tbody>
+        </table>
+        <button class="eval-btn eval-btn-export" onclick="anm_exportToWord()" style="background:#27ae60; margin-top: 20px;">📄 تصدير الكتاب الرسمي (Word)</button>
+    </div>
+</div>
+
+<div id="anm_reasonManagerModal" class="modal-overlay" style="z-index: 3500;">
+    <div class="modal-content"><div class="modal-title">⚙️ إدارة الأسباب (أدوية فوق الحاجة)</div>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;"><input type="text" id="anm_newReasonInput" class="search-box" style="flex: 1; padding: 10px;" placeholder="اكتب سبباً جديداً..."><button class="btn-add-item" onclick="anm_addReason()">إضافة</button></div>
+        <ul id="anm_reasonsListUl" class="sessions-list" style="max-height: 250px; overflow-y: auto; text-align: right; padding: 0;"></ul>
+        <div style="margin-top:15px;"><button class="btn-cancel" onclick="anm_closeReasonManager()">إغلاق وحفظ</button></div>
+    </div>
+</div>
+<div id="anm_sessionsModal" class="modal-overlay" style="z-index: 3600;">
+    <div class="modal-content"><div class="modal-title">📂 جلسات أدوية فوق الحاجة</div>
+        <ul id="anm_sessionsListUl" class="sessions-list" style="max-height: 250px; overflow-y: auto; text-align: right; padding: 0;"></ul>
+        <div style="margin-top:15px;"><button class="btn-cancel" onclick="anm_closeSessionsModal()">إغلاق</button></div>
     </div>
 </div>
 
@@ -3215,11 +3666,18 @@
     // ============================================
     // === دالة عرض قائمة المستخدمين (محدثة) ===
     // ============================================
+
     function renderChatUsersList() {
         const listContainer = document.getElementById('chatUsersList');
         if (!listContainer) return;
-        
-        listContainer.innerHTML = `<div class="chat-user-header">الزملاء المتصلون</div>`;
+
+        // إضافة زر الإغلاق وتثبيت الشريط العلوي
+        listContainer.innerHTML = `
+            <div class="chat-user-header" style="display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #eee; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <span>الزملاء المتصلون</span>
+                <button onclick="closeChatModal()" style="background:none; border:none; font-size:22px; cursor:pointer; color:#e74c3c; padding: 0 5px;" title="إغلاق الدردشة">❌</button>
+            </div>
+        `;
 
         Object.keys(USERS).forEach(user => {
             if (user === currentUser) return; 
@@ -3329,6 +3787,9 @@
                 db.ref(`typing_status/${roomId}/${currentUser}`).set(false);
             }
         }
+
+        document.getElementById('btnRecord').style.display = 'flex';
+        document.getElementById('btnSendText').style.display = 'none';
     }
 
     // ============================================
@@ -3464,6 +3925,10 @@
                 indicator.style.display = snapshot.val() ? 'inline-block' : 'none';
             }
         });
+
+        if (document.body.classList.contains('mobile-mode')) {
+            document.getElementById('chatMainArea').classList.add('active-mobile-chat');
+        }
     }
 
     function renderMessage(msg) {
@@ -5536,6 +6001,22 @@
             current_zn_items = zn_items;
         }
 
+        // جلب أدوية "فوق الاحتياج" من الذاكرة
+        let current_anm_items = [];
+        if (typeof loadFromStorage === 'function') {
+            current_anm_items = loadFromStorage('anmTempState', []);
+        } else if (typeof anm_items !== 'undefined') {
+            current_anm_items = anm_items;
+        }
+
+        // جلب أدوية "احتياج صفر" من الذاكرة
+        let current_znm_items = [];
+        if (typeof loadFromStorage === 'function') {
+            current_znm_items = loadFromStorage('znmTempState', []);
+        } else if (typeof znm_items !== 'undefined') {
+            current_znm_items = znm_items;
+        }
+
         // جلب مواد "نظام الفحص والتقييم" من الذاكرة
         let current_eval_items = [];
         try {
@@ -5759,6 +6240,102 @@
             `;
             
             current_zn_items.forEach((item, index) => {
+                let monthlyNeedVal = item.monthlyNeed;
+                if(monthlyNeedVal === undefined || monthlyNeedVal === "") monthlyNeedVal = "0";
+
+                content += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td style="direction: ltr; text-align: left;">${item.name}</td>
+                        <td style="direction: ltr;">${item.code}</td>
+                        <td>${item.unit}</td>
+                        <td>${monthlyNeedVal}</td>
+                        <td>${item.buyQty}</td>
+                        <td>${item.reason}</td>
+                    </tr>
+                `;
+            });
+            
+            content += `
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ================= ملحق أدوية فوق الاحتياج =================
+        if (current_anm_items && current_anm_items.length > 0) {
+            content += `<br style="page-break-before: always; mso-break-type: section-break; clear: both;" />`;
+            content += headerContent;
+            
+            content += `
+                <div style="font-size: 10pt; font-weight: bold; margin-bottom: 20px; line-height: 1.6; text-align: justify;">
+                    تم التوصية بشراء الأدوية الضرورية في صالة العمليات والطوارئ وصالة الولادة والتي هي فوق الاحتياج السنوي وكما مبين أدناه:
+                </div>
+                
+                <table class="pt-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">ت</th>
+                            <th style="width: 23%;">اسم الدواء</th>
+                            <th style="width: 13%;">الرمز الوطني</th>
+                            <th style="width: 8%;">الوحدة</th>
+                            <th style="width: 12%;">الاحتياج الشهري</th>
+                            <th style="width: 12%;">الكمية للشراء</th>
+                            <th style="width: 27%;">السبب</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            current_anm_items.forEach((item, index) => {
+                let monthlyNeedVal = item.monthlyNeed;
+                if(monthlyNeedVal === undefined || monthlyNeedVal === "") monthlyNeedVal = "0";
+
+                content += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td style="direction: ltr; text-align: left;">${item.name}</td>
+                        <td style="direction: ltr;">${item.code}</td>
+                        <td>${item.unit}</td>
+                        <td>${monthlyNeedVal}</td>
+                        <td>${item.buyQty}</td>
+                        <td>${item.reason}</td>
+                    </tr>
+                `;
+            });
+            
+            content += `
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ================= ملحق أدوية احتياج صفر =================
+        if (current_znm_items && current_znm_items.length > 0) {
+            content += `<br style="page-break-before: always; mso-break-type: section-break; clear: both;" />`;
+            content += headerContent;
+            
+            content += `
+                <div style="font-size: 10pt; font-weight: bold; margin-bottom: 20px; line-height: 1.6; text-align: justify;">
+                    تم التوصية بشراء الأدوية الضرورية في وحدة الاستشارية وصالة العمليات والطوارئ وصالة الولادة والتي تقدير احتياجها السنوي صفر وكما مبين أدناه:
+                </div>
+                
+                <table class="pt-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">ت</th>
+                            <th style="width: 23%;">اسم الدواء</th>
+                            <th style="width: 13%;">الرمز الوطني</th>
+                            <th style="width: 8%;">الوحدة</th>
+                            <th style="width: 12%;">الاحتياج الشهري</th>
+                            <th style="width: 12%;">الكمية للشراء</th>
+                            <th style="width: 27%;">السبب</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            current_znm_items.forEach((item, index) => {
                 let monthlyNeedVal = item.monthlyNeed;
                 if(monthlyNeedVal === undefined || monthlyNeedVal === "") monthlyNeedVal = "0";
 
@@ -6697,7 +7274,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 يرجى التفضل بالموافقة على تخصيص سيارة لنقل الادوية والمستلزمات الطبية من مخازن قسم الصيدلة الى مستشفانا.
             </div>
             
-            <div style="text-align: center; font-weight: bold; font-size: 16pt; margin-top: 20px; margin-bottom: 400px;">
+            <div style="text-align: center; font-weight: bold; font-size: 16pt; margin-top: 20px; margin-bottom: 150px;">
                 مع التقدير .....
             </div>
 
@@ -10108,6 +10685,9 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             document.body.classList.add('mobile-mode');
         }
         updateMobileStatusUI();
+        
+        // السطر الجديد الذي سيجبر النص على التحديث فوراً
+        updateGreetingText(); 
     }
 
     // استدعاء الوظيفة عند التحميل
@@ -10183,6 +10763,22 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         } else {
             greetingElement.innerText = "مرحبا دكتور " + currentUser; // شكل كامل للكمبيوتر
         }
+
+        // إضافة مستمع لمراقبة تغير حجم الشاشة أو تدوير الهاتف
+        window.addEventListener('resize', function() {
+            const isSmallScreen = window.innerWidth <= 768;
+            const savedMode = localStorage.getItem('msl_mobileMode') === 'true';
+            
+            // تفعيل الوضع تلقائياً إذا صغرت الشاشة
+            if (isSmallScreen || savedMode) {
+                document.body.classList.add('mobile-mode');
+            } else {
+                document.body.classList.remove('mobile-mode');
+            }
+            
+            // تحديث الاختصار (د. / مرحبا دكتور)
+            updateGreetingText();
+        });
     }
 
     // 2. دالة إظهار التطبيق بعد تسجيل الدخول
@@ -10223,8 +10819,476 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         showToast(isMobile ? "تم تفعيل وضع الهاتف 📱" : "تم العودة للوضع المكتبي 💻");
     }
 
+    // ========================================================
+    // === نظام أدوية احتياج صفر (ZNM) وأدوية فوق الحاجة (ANM) ===
+    // ========================================================
 
-    
+    const ZNM_TEMP_KEY = 'znmTempState'; const ZNM_SESSIONS_KEY = 'znmSessions'; const ZNM_REASONS_KEY = 'znmReasonsList';
+    const ANM_TEMP_KEY = 'anmTempState'; const ANM_SESSIONS_KEY = 'anmSessions'; const ANM_REASONS_KEY = 'anmReasonsList';
+
+    let znm_items = []; let znm_reasons = [];
+    let anm_items = []; let anm_reasons = [];
+
+    // --- فتح وإغلاق النوافذ ---
+    function openZeroNeedMedModal() { document.getElementById('zeroNeedMedModal').style.display = 'flex'; znm_loadReasons(); znm_loadTempData(); }
+    function closeZeroNeedMedModal() { document.getElementById('zeroNeedMedModal').style.display = 'none'; }
+    function openAboveNeedMedModal() { document.getElementById('aboveNeedMedModal').style.display = 'flex'; anm_loadReasons(); anm_loadTempData(); }
+    function closeAboveNeedMedModal() { document.getElementById('aboveNeedMedModal').style.display = 'none'; }
+
+    // --- نظام البحث للأدوية ---
+    function setupMedSearch(inputId, boxId, targetList, addItemFunc, checkNeeds) {
+        const input = document.getElementById(inputId);
+        const box = document.getElementById(boxId);
+        input.addEventListener("input", function() {
+            const query = normalizeArabic(this.value);
+            box.innerHTML = "";
+            if (query.length < 1) { box.style.display = "none"; return; }
+            const matches = inventoryDB.filter(i => normalizeArabic(i.name).includes(query) || normalizeArabic(i.code).includes(query));
+            if (matches.length > 0) {
+                box.style.display = "block";
+                matches.slice(0, 50).forEach(item => { 
+                    const li = document.createElement("li"); li.className = "zn-suggestion-item";
+                    let annualNeed = parseFloat(item.annual_need) || 0;
+                    let needLabel = annualNeed > 0 ? ` <b style="color: ${checkNeeds ? '#c0392b' : '#27ae60'};">(احتياج: ${annualNeed})</b>` : "";
+                    li.innerHTML = `<div><strong style="direction:ltr; display:inline-block;">${item.name}</strong> ${needLabel}<br><small style="color:#777;">${item.code || ''}</small></div>`;
+                    li.onclick = () => addItemFunc(item);
+                    box.appendChild(li);
+                });
+            } else { box.style.display = "none"; }
+        });
+        document.addEventListener('click', e => { if (e.target !== input) box.style.display = "none"; });
+    }
+
+    setupMedSearch("znm_searchInput", "znm_suggestions", znm_items, znm_addItem, true); // True يعني يمنع اللي بيها احتياج سنوي
+    setupMedSearch("anm_searchInput", "anm_suggestions", anm_items, anm_addItem, false);
+
+    function znm_addItem(itemData) {
+        if(znm_items.some(i => i.name === itemData.name)) { alert("⚠️ الدواء موجود مسبقاً."); return; }
+        if((parseFloat(itemData.annual_need) || 0) > 0) { alert("⛔ لا يمكن اختيار هذا الدواء! يمتلك تقدير احتياج سنوي."); return; }
+        let monthly_need = parseFloat(itemData.monthly_need) || 0;
+        let buy_qty = itemData.qty_buy || (monthly_need > 0 ? monthly_need : "");
+        let lastReason = znm_items.length > 0 ? znm_items[znm_items.length - 1].reason : "";
+        znm_items.push({ name: itemData.name, code: itemData.code || "", unit: itemData.unit || "", monthlyNeed: monthly_need, buyQty: buy_qty, reason: lastReason });
+        document.getElementById("znm_searchInput").value = ""; document.getElementById("znm_suggestions").style.display = "none";
+        znm_renderTable(); znm_saveTempData();
+    }
+
+    function anm_addItem(itemData) {
+        if(anm_items.some(i => i.name === itemData.name)) { alert("⚠️ الدواء موجود مسبقاً."); return; }
+        let annual_need = parseFloat(itemData.annual_need) || 0;
+        let monthly_need = parseFloat(itemData.monthly_need) || (annual_need > 0 ? Math.round(annual_need/12) : 0);
+        let buy_qty = itemData.qty_buy || "";
+        let lastReason = anm_items.length > 0 ? anm_items[anm_items.length - 1].reason : "";
+        anm_items.push({ name: itemData.name, code: itemData.code || "", unit: itemData.unit || "", monthlyNeed: monthly_need, buyQty: buy_qty, reason: lastReason });
+        document.getElementById("anm_searchInput").value = ""; document.getElementById("anm_suggestions").style.display = "none";
+        anm_renderTable(); anm_saveTempData();
+    }
+
+    // --- رسم الجداول ---
+    function buildMedTable(tbodyId, itemsArray, reasonsArray, prefix) {
+        const tbody = document.getElementById(tbodyId); tbody.innerHTML = "";
+        let optionsHtml = '<option value="" disabled selected>▼</option>' + reasonsArray.map(r => `<option value="${r}">${r}</option>`).join('');
+        itemsArray.forEach((item, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><input type="number" class="zn-seq-input" value="${index + 1}" onkeydown="${prefix}_handleSeqKey(event, this, ${index})" onchange="${prefix}_handleSeqChange(this, ${index})" onclick="this.select()" onfocus="this.select()" style="width: 100%; text-align: center; font-weight: bold; background: transparent; border: none; font-size: 14px;"></td>
+                <td style="direction:ltr; text-align:left; font-weight:bold;">${item.name}</td>
+                <td style="direction:ltr;">${item.code}</td><td>${item.unit}</td>
+                <td><input type="number" class="zn-table-input" value="${item.monthlyNeed}" onchange="${prefix}_updateItem(${index}, 'monthlyNeed', this.value)"></td>
+                <td><input type="number" class="zn-table-input" value="${item.buyQty}" onchange="${prefix}_updateItem(${index}, 'buyQty', this.value)"></td>
+                <td><div style="display: flex; gap: 5px;"><input type="text" id="${prefix}_reason_input_${index}" class="zn-table-input" style="flex: 1;" value="${item.reason}" onchange="${prefix}_updateItem(${index}, 'reason', this.value)"><select class="zn-table-input" style="width: 35px; background: #e8f0fe;" onchange="document.getElementById('${prefix}_reason_input_${index}').value = this.value; ${prefix}_updateItem(${index}, 'reason', this.value); this.selectedIndex = 0;">${optionsHtml}</select></div></td>
+                <td><button style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold;" onclick="${prefix}_deleteItem(${index})">X</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function znm_renderTable() { buildMedTable("znm_tableBody", znm_items, znm_reasons, "znm"); }
+    function anm_renderTable() { buildMedTable("anm_tableBody", anm_items, anm_reasons, "anm"); }
+
+    function znm_updateItem(i, f, v) { znm_items[i][f] = v; znm_saveTempData(); }
+    function anm_updateItem(i, f, v) { anm_items[i][f] = v; anm_saveTempData(); }
+    function znm_deleteItem(i) { znm_items.splice(i, 1); znm_renderTable(); znm_saveTempData(); }
+    function anm_deleteItem(i) { anm_items.splice(i, 1); anm_renderTable(); anm_saveTempData(); }
+    function znm_clearTable() { if(confirm("تفريغ؟")) { znm_items = []; znm_renderTable(); znm_saveTempData(); } }
+    function anm_clearTable() { if(confirm("تفريغ؟")) { anm_items = []; anm_renderTable(); anm_saveTempData(); } }
+    function znm_saveTempData() { saveToStorage(ZNM_TEMP_KEY, znm_items); }
+    function anm_saveTempData() { saveToStorage(ANM_TEMP_KEY, anm_items); }
+    function znm_loadTempData() { znm_items = loadFromStorage(ZNM_TEMP_KEY, []); znm_renderTable(); }
+    function anm_loadTempData() { anm_items = loadFromStorage(ANM_TEMP_KEY, []); anm_renderTable(); }
+
+    // --- معالجة التسلسل (Drag & Drop البديل) ---
+    function handleMedSeqKey(e, input, items, index, saveFunc, renderFunc, tbodyId) {
+        if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Enter") {
+            e.stopPropagation();
+        }
+        
+        if (e.key === "ArrowUp" && index > 0) {
+            e.preventDefault();
+            let temp = items[index];
+            items[index] = items[index - 1];
+            items[index - 1] = temp;
+            saveFunc();
+            renderFunc();
+            // إعادة التركيز للحقل بعد نقله للأعلى
+            setTimeout(() => {
+                let newRow = document.getElementById(tbodyId).children[index - 1];
+                if (newRow) {
+                    let newInp = newRow.querySelector('.zn-seq-input');
+                    if (newInp) { newInp.focus(); newInp.select(); }
+                }
+            }, 10);
+        } else if (e.key === "ArrowDown" && index < items.length - 1) {
+            e.preventDefault();
+            let temp = items[index];
+            items[index] = items[index + 1];
+            items[index + 1] = temp;
+            saveFunc();
+            renderFunc();
+            // إعادة التركيز للحقل بعد نقله للأسفل
+            setTimeout(() => {
+                let newRow = document.getElementById(tbodyId).children[index + 1];
+                if (newRow) {
+                    let newInp = newRow.querySelector('.zn-seq-input');
+                    if (newInp) { newInp.focus(); newInp.select(); }
+                }
+            }, 10);
+        } else if (e.key === "Enter") {
+            e.preventDefault();
+            input.blur(); 
+        }
+    }
+
+    function handleMedSeqChange(input, items, index, saveFunc, renderFunc, tbodyId) {
+        let targetIndex = parseInt(input.value) - 1;
+        if (isNaN(targetIndex) || targetIndex < 0) targetIndex = 0;
+        if (targetIndex >= items.length) targetIndex = items.length - 1;
+
+        if (index !== targetIndex) {
+            const item = items.splice(index, 1)[0];
+            items.splice(targetIndex, 0, item);
+            saveFunc();
+            renderFunc();
+            
+            // تتبع الحقل عند كتابة رقم جديد
+            setTimeout(() => {
+                let newRow = document.getElementById(tbodyId).children[targetIndex];
+                if (newRow) {
+                    let newInp = newRow.querySelector('.zn-seq-input');
+                    if(newInp) { newInp.focus(); newInp.select(); }
+                    newRow.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            }, 10);
+        } else {
+            input.value = index + 1;
+        }
+    }
+
+    function znm_handleSeqKey(e, input, idx) { handleMedSeqKey(e, input, znm_items, idx, znm_saveTempData, znm_renderTable, "znm_tableBody"); }
+    function anm_handleSeqKey(e, input, idx) { handleMedSeqKey(e, input, anm_items, idx, anm_saveTempData, anm_renderTable, "anm_tableBody"); }
+    function znm_handleSeqChange(input, idx) { handleMedSeqChange(input, znm_items, idx, znm_saveTempData, znm_renderTable, "znm_tableBody"); }
+    function anm_handleSeqChange(input, idx) { handleMedSeqChange(input, anm_items, idx, anm_saveTempData, anm_renderTable, "anm_tableBody"); }
+    // --- إدارة الأسباب ---
+    function setupMedReasons(type) {
+        const isZN = type === 'znm';
+        const storageKey = isZN ? ZNM_REASONS_KEY : ANM_REASONS_KEY;
+        const defaultReasons = ["زيادة عدد المرضى والعمليات في المستشفى", "زيادة عدد المرضى وزيادة طلب الدواء من قبل الاطباء"];
+        if(isZN) znm_reasons = loadFromStorage(storageKey, defaultReasons); else anm_reasons = loadFromStorage(storageKey, defaultReasons);
+    }
+    function znm_loadReasons() { setupMedReasons('znm'); }
+    function anm_loadReasons() { setupMedReasons('anm'); }
+    function znm_openReasonManager() { document.getElementById('znm_reasonManagerModal').style.display='flex'; renderMedReasonsList('znm'); }
+    function anm_openReasonManager() { document.getElementById('anm_reasonManagerModal').style.display='flex'; renderMedReasonsList('anm'); }
+    function znm_closeReasonManager() { document.getElementById('znm_reasonManagerModal').style.display='none'; znm_renderTable(); }
+    function anm_closeReasonManager() { document.getElementById('anm_reasonManagerModal').style.display='none'; anm_renderTable(); }
+
+    function renderMedReasonsList(type) {
+        const isZN = type === 'znm'; const ulId = isZN ? 'znm_reasonsListUl' : 'anm_reasonsListUl';
+        const reasons = isZN ? znm_reasons : anm_reasons; const ul = document.getElementById(ulId); ul.innerHTML = "";
+        reasons.forEach((r, i) => {
+            const li = document.createElement("li"); li.className = "session-item";
+            li.innerHTML = `<input type="text" value="${r}" class="eval-cell-input" style="flex:1; text-align:right;" onchange="${type}_editReason(${i}, this.value)"><button class="btn-delete-session" onclick="${type}_deleteReason(${i})">🗑️</button>`;
+            ul.appendChild(li);
+        });
+    }
+    function znm_addReason() { const v = document.getElementById('znm_newReasonInput').value.trim(); if(v){ znm_reasons.push(v); saveToStorage(ZNM_REASONS_KEY, znm_reasons); document.getElementById('znm_newReasonInput').value=''; renderMedReasonsList('znm'); } }
+    function anm_addReason() { const v = document.getElementById('anm_newReasonInput').value.trim(); if(v){ anm_reasons.push(v); saveToStorage(ANM_REASONS_KEY, anm_reasons); document.getElementById('anm_newReasonInput').value=''; renderMedReasonsList('anm'); } }
+    function znm_editReason(i, v) { if(v.trim()) { znm_reasons[i] = v.trim(); saveToStorage(ZNM_REASONS_KEY, znm_reasons); } }
+    function anm_editReason(i, v) { if(v.trim()) { anm_reasons[i] = v.trim(); saveToStorage(ANM_REASONS_KEY, anm_reasons); } }
+    function znm_deleteReason(i) { if(confirm("حذف؟")){ znm_reasons.splice(i,1); saveToStorage(ZNM_REASONS_KEY, znm_reasons); renderMedReasonsList('znm'); } }
+    function anm_deleteReason(i) { if(confirm("حذف؟")){ anm_reasons.splice(i,1); saveToStorage(ANM_REASONS_KEY, anm_reasons); renderMedReasonsList('anm'); } }
+
+    // --- الجلسات ---
+    function znm_saveCurrentSession() { if(znm_items.length===0){alert("فارغ!");return;} const name=prompt("اسم الجلسة:","أدوية احتياج صفر"); if(name){ let s=loadFromStorage(ZNM_SESSIONS_KEY,[]); s.push({id:Date.now(), name:name, date:new Date().toLocaleString('ar-IQ'), items:JSON.parse(JSON.stringify(znm_items))}); saveToStorage(ZNM_SESSIONS_KEY, s); alert("تم"); } }
+    function anm_saveCurrentSession() { if(anm_items.length===0){alert("فارغ!");return;} const name=prompt("اسم الجلسة:","أدوية فوق الحاجة"); if(name){ let s=loadFromStorage(ANM_SESSIONS_KEY,[]); s.push({id:Date.now(), name:name, date:new Date().toLocaleString('ar-IQ'), items:JSON.parse(JSON.stringify(anm_items))}); saveToStorage(ANM_SESSIONS_KEY, s); alert("تم"); } }
+    function znm_openSessionsModal() { document.getElementById('znm_sessionsModal').style.display='flex'; znm_renderSessions(); }
+    function anm_openSessionsModal() { document.getElementById('anm_sessionsModal').style.display='flex'; anm_renderSessions(); }
+    function znm_closeSessionsModal() { document.getElementById('znm_sessionsModal').style.display='none'; }
+    function anm_closeSessionsModal() { document.getElementById('anm_sessionsModal').style.display='none'; }
+
+    function renderMedSessions(type) {
+        const isZN = type === 'znm'; const ulId = isZN ? 'znm_sessionsListUl' : 'anm_sessionsListUl';
+        const key = isZN ? ZNM_SESSIONS_KEY : ANM_SESSIONS_KEY;
+        const ul = document.getElementById(ulId); let sessions = loadFromStorage(key, []); ul.innerHTML = "";
+        if(sessions.length===0) { ul.innerHTML = '<li style="text-align:center;">لا توجد جلسات</li>'; return; }
+        sessions.reverse().forEach(s => {
+            const li = document.createElement("li"); li.className = "session-item";
+            li.innerHTML = `<div><strong>${s.name}</strong><br><small>${s.date} - (${s.items.length} دواء)</small></div>
+            <div style="display:flex; gap:5px;"><button class="btn-load-session" style="background:#8e44ad;" onclick="med_shareSession('${type}', ${s.id})">إرسال 💬</button><button class="btn-load-session" onclick="${type}_loadSession(${s.id})">تحميل 📥</button><button class="btn-delete-session" onclick="${type}_deleteSession(${s.id})">حذف 🗑️</button></div>`;
+            ul.appendChild(li);
+        });
+    }
+    function znm_renderSessions() { renderMedSessions('znm'); }
+    function anm_renderSessions() { renderMedSessions('anm'); }
+    function znm_loadSession(id) { let s=loadFromStorage(ZNM_SESSIONS_KEY,[]).find(x=>x.id===id); if(s&&confirm("استبدال؟")){ znm_items=JSON.parse(JSON.stringify(s.items)); znm_renderTable(); znm_saveTempData(); znm_closeSessionsModal(); } }
+    function anm_loadSession(id) { let s=loadFromStorage(ANM_SESSIONS_KEY,[]).find(x=>x.id===id); if(s&&confirm("استبدال؟")){ anm_items=JSON.parse(JSON.stringify(s.items)); anm_renderTable(); anm_saveTempData(); anm_closeSessionsModal(); } }
+    function znm_deleteSession(id) { if(confirm("حذف؟")){ let s=loadFromStorage(ZNM_SESSIONS_KEY,[]).filter(x=>x.id!==id); saveToStorage(ZNM_SESSIONS_KEY, s); znm_renderSessions(); } }
+    function anm_deleteSession(id) { if(confirm("حذف؟")){ let s=loadFromStorage(ANM_SESSIONS_KEY,[]).filter(x=>x.id!==id); saveToStorage(ANM_SESSIONS_KEY, s); anm_renderSessions(); } }
+
+    // --- مشاركة جلسات الأدوية ---
+    let medSessionToShare = { type: null, id: null };
+    function med_shareSession(type, id) {
+        medSessionToShare = { type, id };
+        const modal = document.getElementById('shareUserSelectModal');
+        const listContainer = document.getElementById('shareUserList'); listContainer.innerHTML = '';
+        Object.keys(USERS).forEach(user => {
+            if (user === currentUser) return; 
+            const li = document.createElement('li'); li.className = 'session-item';
+            li.innerHTML = `<span>${user}</span><button class="btn-load-session" onclick="executeMedShare('${user}')">إرسال 📤</button>`;
+            listContainer.appendChild(li);
+        });
+        modal.style.display = 'flex';
+    }
+    function executeMedShare(targetUser) {
+        if(!medSessionToShare.id) return;
+        const isZN = medSessionToShare.type === 'znm';
+        const key = isZN ? ZNM_SESSIONS_KEY : ANM_SESSIONS_KEY;
+        const session = loadFromStorage(key, []).find(s => s.id === medSessionToShare.id);
+        if(session && confirm(`إرسال لـ ${targetUser}؟`)) {
+            const originalPartner = currentChatPartner; currentChatPartner = targetUser;
+            sendMessage('session', '', { sessionData: session.items, itemsCount: session.items.length, sessionType: medSessionToShare.type })
+            .then(() => { alert("تم الإرسال"); document.getElementById('shareUserSelectModal').style.display='none'; })
+            .finally(() => currentChatPartner = originalPartner);
+        }
+    }
+
+    // --- تصدير Word للأدوية ---
+    // --- تصدير Word للأدوية (محدث لدعم الشعار في الموبايل والكمبيوتر) ---
+    function baseMedExportWord(items, isZeroNeed, useShort = false, wordCount = 4, fontSize = 10) {
+        if (items.length === 0) {
+            alert("لا توجد بيانات للتصدير.");
+            return;
+        }
+
+        const title = isZeroNeed ? "شراء أدوية تقديرها صفر" : "شراء أدوية فوق الاحتياج";
+        const textBody = isZeroNeed ? 
+            "يرجى التفضل بالموافقة على شراء الأدوية وحسب القوائم المرفقة كون تقدير احتياجها صفر لعام 2026م." : 
+            "يرجى التفضل بالموافقة على شراء الأدوية وحسب القوائم المرفقة علماً ان هذه الأدوية هي فوق الاحتياج وذلك للاسباب المدرجة في الجدول المرفق.";
+
+        // استخدام نفس التنسيقات (CSS) الخاصة بكتب المواد لضمان التطابق
+        const css = `
+            <style>
+                @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.0cm; }
+                div.Section1 { page: Section1; direction: rtl; }
+                body { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13pt; direction: rtl; text-align: right; }
+                .header-table { width: 100%; border: none; margin-bottom: 5px; } 
+                .header-table td { border: none; text-align: center; padding: 0; }
+                .header-right { text-align: right; font-weight: bold; font-size: 13pt; line-height: 1.4; }
+                .header-left { text-align: left; font-weight: bold; font-size: 13pt; padding-left: 20px; line-height: 1.4; }
+                .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; }
+                .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 4px; font-weight: bold; text-align: center; font-size: ${fontSize}pt; }
+                .doc-table td { border: 1px solid #000; padding: 4px; text-align: center; font-size: ${fontSize}pt; height: 35px; }
+                .signature-table { width: 100%; border: none; margin-top: 40px; } 
+                .signature-table td { border: none; text-align: center; font-weight: bold; font-size: 13pt; vertical-align: top; }
+                .page-break { page-break-before: always; clear: both; mso-break-type: section-break; }
+            </style>
+        `;
+
+        const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>${title}</title>${css}</head><body dir='rtl'><div class='Section1'>`;
+        const postHtml = "</div></body></html>";
+
+        // استخدام كود الشعار الأصلي src="OIP.gif" ليتعرف عليه نظام الهاتف
+        const headerContent = `
+            <table class="header-table" dir="rtl">
+                <tr>
+                    <td class="header-right" style="width: 40%; vertical-align: top;">
+                        وزارة الصحة<br>
+                        دائرة صحة البصرة<br>
+                        مستشفى أم قصر العام
+                    </td>
+                    <td style="width: 20%; text-align: center; vertical-align: middle;">
+                        <img src="OIP.gif" width="90" height="80" alt="Logo">
+                    </td>
+                    <td class="header-left" style="width: 40%; vertical-align: top;">
+                        العدد:<br>
+                        التاريخ:<br>
+                    </td>
+                </tr>
+            </table>
+            <hr style="border: 0; border-top: 3px solid #000; margin: 5px 0 10px 0;">
+        `;
+
+        // ==========================================
+        // الصفحة الأولى: الكتاب الرسمي والتواقيع
+        // ==========================================
+        let content = '<div style="width:100%;">'; 
+        content += headerContent;
+        content += `
+            <div style="font-weight: bold; font-size: 14pt; margin-bottom: 5px; margin-top: 20px;">الى / دائرة صحة البصرة – مكتب المدير العام</div>
+            <div style="text-align: center; font-weight: bold; font-size: 16pt; margin: 25px 0;">م / ${title}</div>
+            <div style="font-weight: bold; font-size: 14pt; margin-bottom: 15px;">تحية طبية....</div>
+            <div style="text-align: justify; font-size: 14pt; line-height: 1.8; text-indent: 30px;">
+                ${textBody}
+            </div>
+            <div style="text-align: right; font-size: 14pt; margin-top: 10px;">
+                وبناء على محضر الصيدلة والعلاج .
+            </div>
+            <div style="text-align: center; font-weight: bold; font-size: 14pt; margin-top: 30px;">
+                هذا ولكم الامر مع التقدير .....
+            </div>
+            
+            <table class="signature-table" dir="rtl" style="margin-top: 320px;">
+                <tr>
+                    <td style="width: 50%;">
+                        الصيدلاني<br><br>
+                        مصطفى مهدي ناصر<br>
+                        مدير وحدة الصيدلة
+                    </td>
+                    <td style="width: 50%;">
+                        الصيدلاني<br><br>
+                        محمد عصام عبدالخالق<br>
+                        مدير مستشفى أم قصر العام
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align:right; font-weight:bold; font-size:12pt; margin-top:30px;">وحدة الصيدلة</div>
+        `;
+
+        // ==========================================
+        // الصفحات التالية: جداول الأدوية
+        // ==========================================
+        const itemsPerPage = 8;
+        const totalRows = items.length;
+
+        for (let i = 0; i < totalRows; i += itemsPerPage) {
+            content += '<br class="page-break" />';
+            content += headerContent;
+            
+            content += `
+                <div style="text-align: center; font-weight: bold; font-size: 14pt; margin-top: 10px; margin-bottom: 15px; text-decoration: underline;">
+                    قائمة الأدوية المراد شرائها
+                </div>
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 4%;">ت</th>
+                            <th style="width: 25%;">اسم الدواء</th>
+                            <th style="width: 12%;">الرمز الوطني</th>
+                            <th style="width: 7%;">وحدة التعبئة</th>
+                            <th style="width: 8%;">الاحتياج الشهري</th>
+                            <th style="width: 8%;">الكمية المراد شراؤها</th>
+                            <th style="width: 36%;">السبب</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            for (let k = 0; k < itemsPerPage; k++) {
+                const dataIndex = i + k;
+                if (dataIndex < totalRows) {
+                    const item = items[dataIndex];
+                    let itemName = item.name;
+                    
+                    if (useShort && typeof getShortName === 'function') itemName = getShortName(itemName, wordCount);
+
+                    content += `<tr>
+                        <td>${dataIndex + 1}</td>
+                        <td style="direction:ltr;">${itemName}</td>
+                        <td style="direction:ltr;">${item.code}</td>
+                        <td>${item.unit}</td>
+                        <td>${item.monthlyNeed}</td>
+                        <td>${item.buyQty}</td>
+                        <td>${item.reason}</td>
+                    </tr>`;
+                } else {
+                    content += "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+                }
+            }
+
+            content += `
+                    </tbody>
+                </table>
+                <div style="text-align:right; font-weight:bold; font-size:12pt; margin-top:20px;">وحدة الصيدلة</div>
+            `;
+        }
+        content += "</div>";
+
+        const fullHtml = preHtml + content + postHtml;
+        const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `كتاب_${title.replace(/ /g, '_')}.doc`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function znm_exportToWord() { baseMedExportWord(znm_items, true); }
+    function anm_exportToWord() { baseMedExportWord(anm_items, false); }
+
+    // ========================================================
+    // === دوال الدردشة الذكية (تحديثات وضع الهاتف) ===
+    // ========================================================
+
+    // 1. فتح شاشة المحادثة بشكل منزلق في وضع الهاتف
+    // ابحث في كودك عن الدالة الأصلية loadChatWith وقم بتحديثها لإضافة هذا السطر:
+    // (أو ضع هذا السطر داخلها مباشرة بعد تعريف currentChatPartner = partnerName;)
+    /*
+        if (document.body.classList.contains('mobile-mode')) {
+            document.getElementById('chatMainArea').classList.add('active-mobile-chat');
+        }
+    */
+
+    // 2. زر الرجوع لقائمة الأسماء في الموبايل
+    function closeMobileChat() {
+        document.getElementById('chatMainArea').classList.remove('active-mobile-chat');
+        document.querySelectorAll('.user-list-item').forEach(el => el.classList.remove('active'));
+        currentChatPartner = null;
+        document.getElementById('chatInputArea').style.display = 'none';
+    }
+
+    // 3. التبديل الذكي بين المايكروفون وسهم الإرسال
+    function handleTypingAndMic() {
+        handleTyping(); // تشغيل مؤشر يكتب الآن... الأصلي
+        
+        const input = document.getElementById('chatTextInput');
+        const btnMic = document.getElementById('btnRecord');
+        const btnSend = document.getElementById('btnSendText');
+        
+        if (input.value.trim().length > 0) {
+            btnMic.style.display = 'none';
+            btnSend.style.display = 'flex';
+        } else {
+            btnMic.style.display = 'flex';
+            btnSend.style.display = 'none';
+        }
+    }
+
+    // 4. دالة فتح/إغلاق قائمة المرفقات (Bottom Sheet)
+    function toggleAttachmentMenu() {
+        const menu = document.getElementById('attachmentMenu');
+        menu.classList.toggle('show');
+    }
+
+    // إغلاق قائمة المرفقات عند الضغط في أي مكان خارجها
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('attachmentMenu');
+        const toggleBtn = document.querySelector('.btn-attach-toggle');
+        if (menu && menu.classList.contains('show') && e.target !== menu && e.target !== toggleBtn && !menu.contains(e.target) && !toggleBtn.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+    });
+            
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
